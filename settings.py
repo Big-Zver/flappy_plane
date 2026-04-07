@@ -8,7 +8,7 @@ def load_image(path, size):
 
 
 class Settings:
-    SCREEN_GRADE = 110
+    SCREEN_GRADE = 100
     SCREEN_SIZE = (SCREEN_GRADE * 16, int(SCREEN_GRADE * 9.6))
     SCREEN_CENTER_POS = (SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2)
     FPS = 60
@@ -32,9 +32,11 @@ class Settings:
     ROCK_SPEED = SCREEN_GRADE // 10
 
     INFO_SIZE = [SCREEN_SIZE[0] // 4, SCREEN_SIZE[1] // 8]
+    SYMBOL_SIZE = [SCREEN_GRADE//2, SCREEN_GRADE//2]
 
     CHANGE_MODE = pg.USEREVENT + 1
     PLANE_CRASH = pg.USEREVENT + 2
+    ROCK_BACK = pg.USEREVENT + 3
 
 
 class Unit:
@@ -44,3 +46,18 @@ class Unit:
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+
+
+class Saver:
+    file = 'record.txt'
+
+    @staticmethod
+    def read():
+        with open(Saver.file, 'r') as f:
+            return int(f.read())
+
+    @staticmethod
+    def save(record):
+        if record > Saver.read():
+            with open(Saver.file, 'w') as f:
+                f.write(str(record))

@@ -1,7 +1,7 @@
 import pygame as pg
 
 from background import Background, Foreground
-from settings import Settings as St, Settings
+from settings import Settings as St, Saver
 from sprites import Plane, Rock
 from random import choice
 
@@ -20,6 +20,8 @@ class Game:
         self.rocks = [Rock(self.rock_mode, i+2) for i in range(4)]
         self.foregrounds = [Foreground(self.rock_mode, i) for i in range(2)]
         self.ui = UI()
+        self.score = 0
+        self.record = Saver.read()
 
     def start(self):
         self.going = False
@@ -29,6 +31,7 @@ class Game:
         self.rocks = [Rock(self.rock_mode, i + 2) for i in range(4)]
         self.foregrounds = [Foreground(self.rock_mode, i) for i in range(2)]
         self.ui = UI()
+        self.score = 0
 
     def run(self):
         pg.init()
@@ -56,12 +59,18 @@ class Game:
 
             if event.type == St.PLANE_CRASH:
                 self.going = False
+                Saver.save(self.record)
 
             if event.type == St.CHANGE_MODE:
                 self.rock_mode = choice(St.ROCKS_MODE)
 
+            if event.type == St.ROCK_BACK:
+                self.score += 1
+                if self.score >= self.record:
+                    self.record = self.score
+
             self.plane.event(event)
-            self.ui.event(event)
+            self.ui.event(event, f"SCORE{self.score}", f"RECORD{self.record}")
         for rock in self.rocks:
             rock.event(self.plane)
 
@@ -73,6 +82,7 @@ class Game:
         for fg in self.foregrounds:
             fg.update(self.rock_mode)
         self.ui.update(self.going)
+
 
     def draw(self):
         self.background.draw(self.screen)

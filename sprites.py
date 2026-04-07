@@ -112,10 +112,18 @@ class Rock(Unit):
         self.start(mode)
         self.rect.x = St.SCREEN_SIZE[0]//2 * position
         self.collider = Triangle(self)
+        self.back = False
 
     def event(self, plane):
+        self.is_back(plane)
         if self.collider.collide(plane):
             pg.event.post(pg.event.Event(St.PLANE_CRASH))
+
+    def is_back(self, plane):
+        if not self.back and self.collider.right[0] <= plane.rect.centerx - plane.collider:
+            self.back = True
+            pg.event.post(pg.event.Event(St.ROCK_BACK))
+
 
     def get_image(self, mode):
         path = f"images/Rocks/rock{mode}"
@@ -127,6 +135,7 @@ class Rock(Unit):
         self.is_up = choice([True, False])
         self.image = self.get_image(mode)
         self.rect.left = St.SCREEN_SIZE[0] * 2
+        self.back = False
         if self.is_up:
             self.rect.top = 0
         else:
@@ -137,6 +146,7 @@ class Rock(Unit):
         if self.rect.right <= 0:
             self.start(mode)
         self.collider.update(self)
+
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
