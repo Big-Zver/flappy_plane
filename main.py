@@ -1,6 +1,7 @@
 import pygame as pg
 
 from background import Background, Foreground
+from music import MusicMaker
 from settings import Settings as St, Saver
 from sprites import Plane, Rock
 from random import choice
@@ -22,6 +23,7 @@ class Game:
         self.ui = UI()
         self.score = 0
         self.record = Saver.read()
+        self.music_maker = MusicMaker()
 
     def start(self):
         self.going = False
@@ -36,6 +38,7 @@ class Game:
     def run(self):
         pg.init()
         while self.running:
+            self.music_maker.play()
             self.event()
             if self.going:
                 self.update()

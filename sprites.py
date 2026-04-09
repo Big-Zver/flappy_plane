@@ -70,6 +70,8 @@ class Plane:
         self.gravity = St.GRAVITY
         self.collider = St.PLANE_COLLIDER
         self.is_crashed = False
+        self.sound_jump = pg.mixer.Sound('sounds/impactMetal_004.ogg')
+        self.sound_crash = pg.mixer.Sound('sounds/lowFrequency_explosion_001.ogg')
 
     def get_plane_images(self):
         color = choice(St.PLANE_COLORS)
@@ -79,8 +81,10 @@ class Plane:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
                 self.gravity = St.JUMP_SPEED
-        if event.type == St.PLANE_CRASH:
+                self.sound_jump.play()
+        if event.type == St.PLANE_CRASH and not self.is_crashed:
             self.is_crashed = True
+            self.sound_crash.play()
 
     def update(self):
         self.handle_animation()
